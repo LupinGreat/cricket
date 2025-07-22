@@ -6,65 +6,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body { background: #e5f3ff; font-family: Arial, sans-serif; margin: 0; padding: 0; }
-    .container { max-width: 480px; margin: 30px auto 0 auto; background: #fff; border-radius: 14px; box-shadow: 0 4px 18px rgba(0,0,0,0.11); padding: 20px 16px 28px 16px; }
+    .container { max-width: 480px; margin: 30px auto 0; background: #fff; border-radius: 14px; box-shadow: 0 4px 18px rgba(0,0,0,0.11); padding: 20px 16px 28px; display: flex; flex-direction: column; }
     .scoreboard { display: flex; align-items: flex-end; justify-content: center; gap: 12px; font-size: 2.7rem; margin-bottom: 10px; }
     .score { font-size: 3.4rem; font-weight: bold; color: #1976d2; }
     .divider { font-size: 2.6rem; color: #888; }
     .overs { font-size: 1.4rem; margin-left: 14px; color: #333; }
-    .action-buttons { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 16px; margin-bottom: 8px; }
-    .my-btn { padding: 13px 0; width: 94px; font-size: 1.06rem; border: none; border-radius: 8px; background: #1976d2; color: white; cursor: pointer; margin: 3px; font-weight: 500; transition: background 0.18s; box-shadow: 0 2px 8px rgba(0,0,0,0.05);}
+    .action-buttons { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; flex: 1; }
+    .my-btn { padding: 13px 0; width: 94px; font-size: 1.06rem; border: none; border-radius: 8px; background: #1976d2; color: white; cursor: pointer; font-weight: 500; transition: background 0.18s; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
     .my-btn:hover, .my-btn:focus { background: #0d47a1; }
     .my-btn.secondary { background: #f0f4c3; color: #393; }
     .my-btn.danger { background: #e57373; color: #fff; }
     .my-btn.grey { background: #eee; color: #333; }
     .btn-group { display: flex; gap: 7px; margin-bottom: 8px; flex-wrap: wrap; justify-content: center; }
     .alert { background: #e3f2fd; color: #1565c0; padding: 8px 10px; border-radius: 6px; text-align: center; margin: 12px 0; display: none; }
-    .top-buttons { display: flex; justify-content: space-between; margin-bottom: 10px; gap: 7px;}
-    .reset-btn { background: #ffecb3; color: #e65100; border: none; padding: 12px 0; border-radius: 8px; width: 140px; font-size: 1.06rem; font-weight: bold; cursor: pointer; }
+    .top-buttons { display: flex; justify-content: space-between; margin-top: 16px; gap: 7px; flex-wrap: wrap; }
+    .top-buttons button { flex: 1 1 calc(33% - 10px); }
+    .reset-btn { background: #ffecb3; color: #e65100; border: none; padding: 12px 0; border-radius: 8px; width: 100%; font-size: 1.06rem; font-weight: bold; cursor: pointer; }
     .reset-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-    /* Modal styles */
-    .modal-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.34); z-index: 10; display: none;}
-    .modal { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 10px; box-shadow: 0 8px 36px rgba(0,0,0,0.19); padding: 22px 20px 18px 20px; z-index: 20; min-width: 280px; max-width: 94vw; display: none; min-height: 80px;}
+    /* Modal & extra run modal styles */
+    .modal-backdrop { position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: rgba(0,0,0,0.34); z-index: 10; display: none; }
+    .modal { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 10px; box-shadow: 0 8px 36px rgba(0,0,0,0.19); padding: 22px 20px 18px; z-index: 20; min-width: 280px; max-width: 94vw; display: none; }
     .modal h2 { font-size: 1.4rem; margin-bottom: 8px; color: #1976d2; }
     .close-modal { position: absolute; right: 12px; top: 10px; background: #eee; border: none; border-radius: 50%; width: 28px; height: 28px; font-size: 1.25rem; color: #777; cursor: pointer; transition: background 0.2s;}
     .close-modal:hover { background: #ffcdd2; color: #d32f2f; }
-    .controls { display: flex; justify-content: space-between; margin: 12px 0 15px 0; gap: 14px; }
+    .controls { display: flex; justify-content: space-between; margin: 12px 0 15px; gap: 14px; }
     .controls label { font-size: 1.05rem; flex: 0 0 44%; align-self: center; }
-    .controls input[type="text"], .controls input[type="number"] { width: 95px; padding: 11px 9px; border: 1.6px solid #bdbdbd; border-radius: 6px; font-size: 1.18rem; text-align: left; }
+    .controls input[type="text"], .controls input[type="number"] { width: 95px; padding: 11px 9px; border: 1.6px solid #bdbdbd; border-radius: 6px; font-size: 1.18rem; }
     /* Batsman display */
-    .batsmen-row { margin: 12px 0 8px 0; display: flex; flex-direction: row; justify-content: space-between; gap: 12px; }
-    .batsman-box { background: #e3f2fd; padding: 8px 10px 5px 10px; border-radius: 6px; min-width: 40%; position: relative; display: flex; flex-direction: column; align-items: flex-start; }
+    .batsmen-row { margin: 12px 0 8px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+    .batsman-box { background: #e3f2fd; padding: 8px 10px; border-radius: 6px; min-width: 40%; position: relative; display: flex; flex-direction: column; }
     .batsman-name { font-weight: bold; color: #1565c0; font-size: 1.15rem; margin-bottom: 2px; }
     .batsman-score { color: #1565c0; font-size: 1rem; margin-bottom: 1px; }
-    .batsman-status { font-size: 0.95rem; color: #e57373; }
-    .declare-btn { margin-top: 4px; padding: 4px 14px; font-size: 0.98rem; border-radius: 8px; background: #ffecb3; border: none; color: #e65100; cursor: pointer;}
+    .batsman-status { font-size: 0.95rem; color: #e57373; margin-bottom: 4px; }
+    .declare-btn { margin-top: 4px; padding: 4px 14px; font-size: 0.98rem; border-radius: 8px; background: #ffecb3; border: none; color: #e65100; cursor: pointer; }
     .declare-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-    /* Player Score Modal */
-    #player-score-table { width: 100%; border-collapse: collapse; font-size: 1.04rem; }
-    #player-score-table th, #player-score-table td { border-bottom: 1px solid #e0e0e0; padding: 4px 5px; text-align: center; }
     @media (max-width: 550px) {
-      .container { max-width: 99vw; padding: 7vw 1vw 13vw 1vw; }
       .my-btn { width: 46vw; max-width: 99vw; }
-      .scoreboard { font-size: 2.0rem; }
-      .controls label { flex: 1 0 50%; }
       .controls input[type="text"], .controls input[type="number"] { width: 40vw; min-width: 72px; }
-      .batsmen-row { flex-direction: column; gap: 7px;}
-      .batsman-box { min-width: 90%; }
-      .reset-btn { width: 99vw; margin-bottom: 8px;}
+      .top-buttons { flex-direction: column; }
+      .top-buttons button { width: 100%; }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="top-buttons">
-      <button class="my-btn secondary" id="player-score-btn">Show Players</button>
-      <button class="my-btn" id="strike-change-btn">Change Strike</button>
-      <button class="reset-btn" id="reset-btn" style="display:none;">Start New Score</button>
-    </div>
     <div class="scoreboard">
-      <span id="run" class="score">0</span>
-      <span class="divider">/</span>
-      <span id="wickets" class="score">0</span>
+      <span id="run" class="score">0</span><span class="divider">/</span><span id="wickets" class="score">0</span>
       <span id="over-ball" class="overs">0</span>
     </div>
     <div class="batsmen-row" id="batsmen-row"></div>
@@ -91,22 +78,31 @@
       </div>
     </div>
     <div class="alert" id="targetBoard">
-      Require <span id="targetRunsRequired" style="font-weight: bold;"></span>
-      runs in <span id="targetOversLeft" style="font-weight: bold;"></span> balls
+      Require <span id="targetRunsRequired"></span> runs in <span id="targetOversLeft"></span> balls
       <button type="button" class="close-modal" style="float:right;margin-left:10px;" onclick="closeTargetAlert()">&times;</button>
     </div>
+    <div class="top-buttons">
+      <button class="my-btn secondary" id="player-score-btn">Show Players</button>
+      <button class="my-btn" id="strike-change-btn">Change Strike</button>
+      <button class="reset-btn" id="reset-btn" style="display:none;">Start New Score</button>
+    </div>
   </div>
+
+  <!-- Modals -->
   <div class="modal-backdrop" id="modal-backdrop"></div>
+
   <div class="modal" id="scoreboard-modal">
     <button class="close-modal" onclick="closeModal()">&times;</button>
     <h2>Scoreboard</h2>
     <div id="scoreboard-horizontal"></div>
   </div>
+
   <div class="modal" id="player-score-modal">
     <button class="close-modal" onclick="hideModal('player-score-modal')">&times;</button>
     <h2>Player Scores</h2>
     <div id="player-score-table-div"></div>
   </div>
+
   <div class="modal" id="target-modal">
     <button class="close-modal" onclick="closeTargetModal()">&times;</button>
     <h2>Enter Target</h2>
@@ -122,272 +118,258 @@
       <button class="my-btn" type="submit">Set Target</button>
     </form>
   </div>
+
   <div class="modal" id="batsman-modal">
     <button class="close-modal" onclick="closeBatsmanModal()">&times;</button>
     <h2 id="batsman-modal-title"></h2>
-    <form id="batsman-modal-form" onsubmit="return false;">
+    <form id="batsman-modal-form">
       <div id="batsman-modal-inputs"></div>
       <button class="my-btn" type="submit" id="batsman-modal-submit">OK</button>
     </form>
   </div>
+
+  <div class="modal" id="extra-run-modal">
+    <button class="close-modal" onclick="hideModal('extra-run-modal')">&times;</button>
+    <h2 id="extra-run-modal-title">Extra Runs</h2>
+    <div style="display:flex;justify-content:center;align-items:center;gap:14px;font-size:1.5rem;margin-top:14px;">
+      <button class="my-btn" onclick="adjustExtraRun(-1)">−</button>
+      <span id="extra-run-count">0</span>
+      <button class="my-btn" onclick="adjustExtraRun(1)">+</button>
+    </div>
+    <button class="my-btn" style="margin-top:16px;" onclick="confirmExtraRun()">Confirm</button>
+  </div>
+
   <script>
-    // --- State ---
-    let run = 0, wickets = 0, balls = 0, over = 0;
-    let scoreHistory = [], scoreboardBalls = [];
-    let batsmen = [], batsmenOrder = [], onCrease = [null, null];
-    let maxWickets = 10;
-    let declared = [];
-    let targetActive = false, targetRuns = 0, targetBalls = 0;
-    let scoringStarted = false;
+    let run = 0, wickets = 0, balls = 0, over = 0, extraRunsTotal = 0;
+    let scoreHistory = [], scoreboardBalls = [], batsmen = [], batsmenOrder = [], onCrease = [null,null];
+    let declared = []; let targetActive = false, targetRuns = 0, targetBalls = 0, scoringStarted = false;
+    let extraRunCallback = null, extraRunValue = 0;
 
     function loadState() {
-      if (localStorage.getItem('scoreState')) {
-        let state = JSON.parse(localStorage.getItem('scoreState'));
-        run = state.run; wickets = state.wickets; balls = state.balls; over = state.over;
-        scoreHistory = state.scoreHistory || []; scoreboardBalls = state.scoreboardBalls || [];
-        batsmen = state.batsmen || []; batsmenOrder = state.batsmenOrder || [];
-        onCrease = state.onCrease || [null, null]; declared = state.declared || [];
-        targetActive = state.targetActive; targetRuns = state.targetRuns; targetBalls = state.targetBalls;
-        scoringStarted = state.scoringStarted || false;
-      }
+      let s = localStorage.getItem('scoreState');
+      if (s) Object.assign(window, JSON.parse(s));
     }
     function saveState() {
       localStorage.setItem('scoreState', JSON.stringify({
-        run, wickets, balls, over, scoreHistory, scoreboardBalls,
-        batsmen, batsmenOrder, onCrease, declared,
-        targetActive, targetRuns, targetBalls, scoringStarted
+        run,wickets,balls,over,extraRunsTotal,
+        scoreHistory,scoreboardBalls,batsmen,batsmenOrder,onCrease,declared,
+        targetActive,targetRuns,targetBalls,scoringStarted
       }));
     }
     function resetState() {
-      run = wickets = balls = over = 0;
-      scoreHistory = []; scoreboardBalls = [];
-      batsmen = []; batsmenOrder = []; onCrease = [null, null]; declared = [];
-      targetActive = false; targetRuns = targetBalls = 0;
-      scoringStarted = false;
+      run = wickets = balls = over = extraRunsTotal = 0;
+      scoreHistory = scoreboardBalls = batsmen = batsmenOrder = onCrease = [];
+      declared = []; targetActive = false; targetRuns=targetBalls=0; scoringStarted = false;
       saveState(); location.reload();
     }
+
     function updateDisplay() {
       document.getElementById('run').textContent = run;
       document.getElementById('wickets').textContent = wickets;
       document.getElementById('over-ball').textContent = `${over}.${balls}`;
       showBatsmen();
       document.getElementById('reset-btn').style.display = scoringStarted ? '' : 'none';
-      if(targetActive) updateTargetBoard();
+      if (targetActive) updateTargetBoard();
       saveState();
     }
+
     function showBatsmen() {
-      let row = document.getElementById('batsmen-row'); row.innerHTML = "";
-      for(let i=0; i<2; ++i) {
+      let row = document.getElementById('batsmen-row'); row.innerHTML = '';
+      for (let i = 0; i < 2; i++) {
         let idx = onCrease[i];
-        if(idx === null || batsmen[idx] == null) continue;
-        let b = batsmen[idx];
-        let status = b.declared ? "Declared" : (b.out ? "Out" : "Not out");
+        if (idx === null || batsmen[idx] == null) continue;
+        let b = batsmen[idx], status = b.declared ? "Declared" : b.out ? "Out" : "Not out";
         row.innerHTML += `
           <div class="batsman-box">
-            <div class="batsman-name">${b.name} ${i===0?"(Striker)":""}</div>
+            <div class="batsman-name">${b.name}${i===0?" (Striker)":""}</div>
             <div class="batsman-score">Runs: ${b.runs} | Balls: ${b.balls}</div>
             <div class="batsman-status">${status}</div>
-            <button class="declare-btn" onclick="declareBatsman(${idx})" ${b.declared||b.out?'disabled':''}>Declare</button>
+            <button class="declare-btn" onclick="declareBatsman(${idx})" ${b.declared||b.out ? 'disabled' : ''}>Declare</button>
           </div>`;
       }
     }
-    // Show modal for new batsmen
-    function showBatsmanModal(type, callback) {
-      document.getElementById('batsman-modal-title').textContent =
-        (type==="openers") ? "Enter opening batsmen names" : "Enter new batsman name";
-      let inputs = document.getElementById('batsman-modal-inputs'); inputs.innerHTML = "";
-      if(type==="openers") {
-        inputs.innerHTML += `<input type="text" id="batsman1" placeholder="Batsman 1" required style="margin-bottom:10px;"><br>
-                             <input type="text" id="batsman2" placeholder="Batsman 2" required><br>`;
-      } else {
-        inputs.innerHTML += `<input type="text" id="batsmanNew" placeholder="New batsman" required>`;
-      }
-      document.getElementById('batsman-modal-submit').onclick = function(e) {
+
+    function showBatsmanModal(type, cb) {
+      document.getElementById('batsman-modal-title').textContent = type === 'openers' ? "Enter opening batsmen names" : "Enter new batsman name";
+      let inputs = document.getElementById('batsman-modal-inputs'), html = type === 'openers'
+        ? '<input type="text" id="batsman1" placeholder="Batsman 1" required><br><input type="text" id="batsman2" placeholder="Batsman 2" required>'
+        : '<input type="text" id="batsmanNew" placeholder="New batsman" required>';
+      inputs.innerHTML = html;
+      document.getElementById('batsman-modal-submit').onclick = e => {
         e.preventDefault();
-        if(type==="openers") {
+        if (type === 'openers') {
           let n1 = document.getElementById('batsman1').value.trim();
           let n2 = document.getElementById('batsman2').value.trim();
-          if(!n1 || !n2) return;
-          callback(n1, n2);
+          if (!n1 || !n2) return;
+          cb(n1, n2);
         } else {
           let n = document.getElementById('batsmanNew').value.trim();
-          if(!n) return;
-          callback(n);
+          if (!n) return;
+          cb(n);
         }
         hideModal('batsman-modal');
-      }
+      };
       showModal('batsman-modal');
     }
-    function closeBatsmanModal() { hideModal('batsman-modal'); }
-    function setOpeners(name1, name2) {
-      batsmen.push({ name: name1, runs: 0, balls: 0, out: false, declared: false });
-      batsmen.push({ name: name2, runs: 0, balls: 0, out: false, declared: false });
-      batsmenOrder = [0,1]; onCrease = [0,1]; updateDisplay();
-    }
-    function addBatsman(name) {
-      let idx = batsmen.length;
-      batsmen.push({ name: name, runs: 0, balls: 0, out: false, declared: false });
-      batsmenOrder.push(idx);
-      let toReplace = onCrease.findIndex(x=>x===null);
-      if(toReplace !== -1) onCrease[toReplace] = idx;
-      updateDisplay();
-    }
+
     function declareBatsman(idx) {
       batsmen[idx].declared = true;
-      let cidx = onCrease.indexOf(idx);
-      if(cidx !== -1) onCrease[cidx] = null;
+      let ii = onCrease.indexOf(idx); if (ii !== -1) onCrease[ii] = null;
       updateDisplay();
-      if(batsmen.length - batsmenOrder.length < maxWickets - wickets) {
-        setTimeout(()=>showBatsmanModal("new", addBatsman), 300);
-      }
+      setTimeout(() => showBatsmanModal('new', addBatsman), 300);
     }
-    window.declareBatsman = declareBatsman;
 
-    // ---- Core Cricket Logic ----
+    function addBatsman(name) {
+      let idx = batsmen.length;
+      batsmen.push({ name, runs: 0, balls: 0, out: false, declared: false });
+      batsmenOrder.push(idx);
+      let open = onCrease.indexOf(null);
+      if (open !== -1) onCrease[open] = idx;
+      updateDisplay();
+    }
+
     function addScore(type, val=0) {
-      if(onCrease[0]==null || onCrease[1]==null) { showBatsmanModal("openers", setOpeners); return; }
+      if (onCrease[0] === null || onCrease[1] === null) {
+        showBatsmanModal('openers', setOpeners);
+        return;
+      }
       scoringStarted = true;
-      scoreHistory.push({
-        run, wickets, balls, over,
-        scoreboardBalls: JSON.stringify(scoreboardBalls),
-        batsmen: JSON.stringify(batsmen),
-        batsmenOrder: JSON.stringify(batsmenOrder),
-        onCrease: JSON.stringify(onCrease),
-        scoringStarted
-      });
-      let strikerIdx = onCrease[0];
-      if (type === "dot") {
-        batsmen[strikerIdx].balls++;
-        nextBall(0, false, "Dot");
-      }
-      else if (type === "wide" || type === "no_ball") {
-        // 1 run for wide/no ball, plus bat runs if any
-        let extraType = (type === "wide") ? "Wide" : "No";
-        run += 1;
-        let extraRuns = prompt("Enter runs scored by batsmen on this " + extraType + " (leave blank for 0):", "0");
-        extraRuns = parseInt(extraRuns) || 0;
-        if(extraRuns > 0) {
-          batsmen[strikerIdx].runs += extraRuns;
-          batsmen[strikerIdx].balls++;
-          run += extraRuns;
-          // Change strike for odd runs
-          if(extraRuns % 2 === 1) onCrease = [onCrease[1], onCrease[0]];
-        }
-        let label = extraRuns > 0 ? `${extraRuns} (${extraType})` : extraType;
-        recordExtraBall(label);
-      }
-      else if (type === "run") {
-        batsmen[strikerIdx].balls++; batsmen[strikerIdx].runs += val;
-        nextBall(val, false, val);
-        if(val % 2 === 1) onCrease = [onCrease[1], onCrease[0]];
-      }
-      else if (type === "wicket") {
-        let runsBeforeWicket = prompt("Enter runs taken on this ball before wicket (leave blank for 0):", "0");
-        runsBeforeWicket = parseInt(runsBeforeWicket) || 0;
-        if(runsBeforeWicket > 0) {
-          batsmen[strikerIdx].runs += runsBeforeWicket;
-          batsmen[strikerIdx].balls++;
-          run += runsBeforeWicket;
-          // Change strike for odd runs
-          if(runsBeforeWicket % 2 === 1) onCrease = [onCrease[1], onCrease[0]];
-        }
-        batsmen[strikerIdx].balls++;
-        batsmen[strikerIdx].out = true;
-        let label = runsBeforeWicket > 0 ? `${runsBeforeWicket} (Wicket)` : "Wicket";
-        nextBall(0, true, label);
-        onCrease[0] = null; wickets++;
-        setTimeout(()=>showBatsmanModal("new", addBatsman), 300);
-      }
-      updateDisplay();
-    }
-    function nextBall(runs, isWicket, display) {
-      run += runs; recordNormalBall(display, isWicket); balls += 1;
-      if(balls >= 6) { balls = 0; over += 1; onCrease = [onCrease[1], onCrease[0]]; }
-    }
-    function recordNormalBall(result, isWicket) {
-      scoreboardBalls.push({ over: over, ball: balls + 1, result: result });
-    }
-    function recordExtraBall(type) {
-      scoreboardBalls.push({ over: over, ball: balls + 1, result: type });
-    }
-    function undo() {
-      alert('ਪਹਿਲਾਂ ਸਹੀ ਦੱਸ ਦਿੰਦਾ ਸਾਲਿਆ');
-      if(scoreHistory.length === 0) return;
-      let prev = scoreHistory.pop();
-      run = prev.run; wickets = prev.wickets; balls = prev.balls; over = prev.over;
-      scoreboardBalls = JSON.parse(prev.scoreboardBalls || "[]");
-      batsmen = JSON.parse(prev.batsmen || "[]");
-      batsmenOrder = JSON.parse(prev.batsmenOrder || "[]");
-      onCrease = JSON.parse(prev.onCrease || "[null,null]");
-      scoringStarted = prev.scoringStarted;
-      updateDisplay();
-    }
-    document.getElementById('run_dot').onclick = () => addScore("dot");
-    document.getElementById('run_wide').onclick = () => addScore("wide");
-    document.getElementById('run_no_ball').onclick = () => addScore("no_ball");
-    document.getElementById('run_1').onclick = () => addScore("run",1);
-    document.getElementById('run_2').onclick = () => addScore("run",2);
-    document.getElementById('run_3').onclick = () => addScore("run",3);
-    document.getElementById('run_4').onclick = () => addScore("run",4);
-    document.getElementById('run_6').onclick = () => addScore("run",6);
-    document.getElementById('run_W').onclick = () => addScore("wicket");
-    document.getElementById('undo-btn').onclick = () => undo();
+      scoreHistory.push({ run,wickets,balls,over,scoreboardBalls:JSON.stringify(scoreboardBalls),batsmen:JSON.stringify(batsmen),batsmenOrder:JSON.stringify(batsmenOrder),onCrease:JSON.stringify(onCrease),scoringStarted });
 
-    // STRIKE CHANGE BUTTON
-    document.getElementById('strike-change-btn').onclick = function() {
-      if(confirm("Are you sure to change strike?")) {
+      let strikerIdx = onCrease[0];
+
+      if (type === 'dot') {
+        batsmen[strikerIdx].balls++;
+        nextBall(0, false, 'Dot');
+        updateDisplay();
+      } else if (type === 'wide' || type === 'no_ball') {
+        let extraType = type === 'wide' ? 'Wide' : 'No ball';
+        showExtraRunModal(extraType + ' - extra runs', extraRun => {
+          run += 1 + extraRun;
+          extraRunsTotal += 1 + extraRun;
+          if (extraRun > 0) {
+            batsmen[strikerIdx].runs += extraRun;
+            batsmen[strikerIdx].balls++;
+            if (extraRun % 2 === 1) onCrease = [onCrease[1], onCrease[0]];
+          }
+          recordExtraBall(extraRun > 0 ? `${extraRun} (${extraType})` : extraType);
+          updateDisplay();
+        });
+      } else if (type === 'run') {
+        batsmen[strikerIdx].balls++;
+        batsmen[strikerIdx].runs += val;
+        nextBall(val, false, val);
+        if (val % 2 === 1) onCrease = [onCrease[1], onCrease[0]];
+        updateDisplay();
+      } else if (type === 'wicket') {
+        showExtraRunModal('Wicket - runs before out', extraRun => {
+          if (extraRun > 0) {
+            run += extraRun;
+            extraRunsTotal += extraRun;
+            batsmen[strikerIdx].runs += extraRun;
+            batsmen[strikerIdx].balls++;
+            if (extraRun % 2 === 1) onCrease = [onCrease[1], onCrease[0]];
+          }
+          batsmen[strikerIdx].balls++;
+          batsmen[strikerIdx].out = true;
+          wickets++;
+          recordNormalBall('Wicket', true);
+          onCrease[0] = null;
+          setTimeout(() => showBatsmanModal('new', addBatsman), 300);
+          updateDisplay();
+        });
+      }
+    }
+
+    function nextBall(runs, isWicket, label) {
+      run += runs;
+      recordNormalBall(label, isWicket);
+      balls++;
+      if (balls >= 6) {
+        balls = 0;
+        over++;
+        onCrease = [onCrease[1], onCrease[0]];
+      }
+    }
+
+    function recordNormalBall(result, isWicket) {
+      scoreboardBalls.push({ over, ball: balls + 1, result });
+    }
+
+    function recordExtraBall(label) {
+      scoreboardBalls.push({ over, ball: balls + 1, result: label });
+    }
+
+    function undo() {
+      if (!scoreHistory.length) return;
+      let prev = scoreHistory.pop();
+      Object.assign(window, {
+        run: prev.run, wickets: prev.wickets, balls: prev.balls,
+        over: prev.over, scoreboardBalls: JSON.parse(prev.scoreboardBalls),
+        batsmen: JSON.parse(prev.batsmen), batsmenOrder: JSON.parse(prev.batsmenOrder),
+        onCrease: JSON.parse(prev.onCrease), scoringStarted: prev.scoringStarted
+      });
+      updateDisplay();
+    }
+
+    document.getElementById('run_dot').onclick = () => addScore('dot');
+    document.getElementById('run_wide').onclick = () => addScore('wide');
+    document.getElementById('run_no_ball').onclick = () => addScore('no_ball');
+    document.getElementById('run_1').onclick = () => addScore('run', 1);
+    document.getElementById('run_2').onclick = () => addScore('run', 2);
+    document.getElementById('run_3').onclick = () => addScore('run', 3);
+    document.getElementById('run_4').onclick = () => addScore('run', 4);
+    document.getElementById('run_6').onclick = () => addScore('run', 6);
+    document.getElementById('run_W').onclick = () => addScore('wicket');
+    document.getElementById('undo-btn').onclick = undo;
+
+    document.getElementById('strike-change-btn').onclick = () => {
+      if (confirm("Are you sure to change strike?")) {
         onCrease = [onCrease[1], onCrease[0]];
         updateDisplay();
       }
     };
 
-    document.getElementById('scoreboard-btn').onclick = function() { openModal(); };
+    document.getElementById('scoreboard-btn').onclick = openModal;
     function openModal() {
       let div = document.getElementById('scoreboard-horizontal');
-      div.innerHTML = "";
-      let overs = {};
-      for(let i=0; i<scoreboardBalls.length; ++i) {
-        let b = scoreboardBalls[i], o = b.over;
-        if(!overs[o]) overs[o]=[];
-        overs[o].push(`${b.over}.${b.ball} - ${b.result}`);
-      }
-      Object.keys(overs).forEach(o=>{
-        div.innerHTML += `<div><b>over ${parseInt(o)+1}:</b> ${overs[o].join(', ')}</div>`;
+      div.innerHTML = `<div><strong>Total Extras:</strong> ${extraRunsTotal}</div>`;
+      let oversGroup = {};
+      scoreboardBalls.forEach(b => {
+        if (!oversGroup[b.over]) oversGroup[b.over] = [];
+        oversGroup[b.over].push(`${b.over+1}.${b.ball} – ${b.result}`);
+      });
+      Object.keys(oversGroup).forEach(o => {
+        div.innerHTML += `<div><b>Over ${parseInt(o)+1}:</b> ${oversGroup[o].join(', ')}</div>`;
       });
       showModal('scoreboard-modal');
     }
-    function closeModal() { hideModal('scoreboard-modal'); }
 
-    document.getElementById('player-score-btn').onclick = function() {
+    document.getElementById('player-score-btn').onclick = () => {
       let div = document.getElementById('player-score-table-div');
-      let outMark = b => b.out ? "Out" : (b.declared ? "Declared" : "Not out");
-      let rows = batsmen.map(b=>`<tr><td>${b.name}</td><td>${b.runs}</td><td>${b.balls}</td><td>${outMark(b)}</td></tr>`).join('');
-      div.innerHTML = `<table id="player-score-table">
-        <tr><th>Name</th><th>Runs</th><th>Balls</th><th>Status</th></tr>${rows}</table>`;
+      let rows = batsmen.map(b => {
+        let st = b.out ? "Out" : b.declared ? "Declared" : "Not out";
+        return `<tr><td>${b.name}</td><td>${b.runs}</td><td>${b.balls}</td><td>${st}</td></tr>`;
+      }).join('');
+      div.innerHTML = `<table style="width:100%;border-collapse:collapse;"><tr><th>Name</th><th>Runs</th><th>Balls</th><th>Status</th></tr>${rows}</table>`;
       showModal('player-score-modal');
     };
 
-    function showModal(id) { document.getElementById('modal-backdrop').style.display = 'block'; document.getElementById(id).style.display = 'block'; }
-    function hideModal(id) { document.getElementById('modal-backdrop').style.display = 'none'; document.getElementById(id).style.display = 'none'; }
-    document.getElementById('modal-backdrop').onclick = function() {
-      hideModal('scoreboard-modal'); hideModal('target-modal'); hideModal('batsman-modal'); hideModal('player-score-modal');
-    };
-
-    document.getElementById('targetModeButton').onclick = function() {
-      document.getElementById('targetRuns').value = targetRuns || 100;
-      document.getElementById('targetOvers').value = (targetBalls ? (targetBalls/6) : 10);
+    document.getElementById('targetModeButton').onclick = () => {
+      document.getElementById('targetRuns').value = targetRuns || '';
+      document.getElementById('targetOvers').value = targetBalls/6 || '';
       showModal('target-modal');
     };
-    function closeTargetModal() { hideModal('target-modal'); }
+
     function setTarget() {
-      let runBox = document.getElementById('targetRuns'), overBox = document.getElementById('targetOvers');
-      targetRuns = parseInt(runBox.value) || 0;
-      let overs = parseInt(overBox.value) || 1;
-      targetBalls = overs * 6; targetActive = true;
-      closeTargetModal(); showTargetAlert(); updateTargetBoard();
+      targetRuns = +document.getElementById('targetRuns').value || 0;
+      targetBalls = (+document.getElementById('targetOvers').value || 0) * 6;
+      targetActive = true;
+      hideModal('target-modal');
+      document.getElementById('targetBoard').style.display = 'block';
+      updateTargetBoard();
     }
-    function showTargetAlert() { document.getElementById('targetBoard').style.display = 'block'; }
-    function closeTargetAlert() { document.getElementById('targetBoard').style.display = 'none'; targetActive = false; saveState(); }
+
     function updateTargetBoard() {
       let runsLeft = Math.max(0, targetRuns - run);
       let ballsLeft = Math.max(0, targetBalls - (over*6 + balls));
@@ -396,12 +378,61 @@
       saveState();
     }
 
-    document.getElementById('reset-btn').onclick = function() {
-      if(confirm("Do you want to count a new score?")) resetState();
+    function closeTargetAlert() {
+      document.getElementById('targetBoard').style.display = 'none';
+      targetActive = false;
+      saveState();
+    }
+
+    document.getElementById('reset-btn').onclick = () => {
+      if (confirm("Do you want to count a new score?")) resetState();
     };
 
-    loadState(); updateDisplay();
-    if(onCrease[0]==null||onCrease[1]==null) setTimeout(()=>showBatsmanModal("openers", setOpeners), 200);
+    function showModal(id) {
+      document.getElementById('modal-backdrop').style.display = 'block';
+      document.getElementById(id).style.display = 'block';
+    }
+
+    function hideModal(id) {
+      document.getElementById('modal-backdrop').style.display = 'none';
+      document.getElementById(id).style.display = 'none';
+    }
+
+    function closeModal() { hideModal('scoreboard-modal'); }
+    function closeTargetModal() { hideModal('target-modal'); }
+    function closeBatsmanModal() { hideModal('batsman-modal'); }
+
+    // Extra-run modal functions:
+    function showExtraRunModal(title, callback) {
+      extraRunCallback = callback;
+      extraRunValue = 0;
+      document.getElementById('extra-run-modal-title').textContent = title;
+      document.getElementById('extra-run-count').textContent = extraRunValue;
+      showModal('extra-run-modal');
+    }
+    function adjustExtraRun(delta) {
+      extraRunValue = Math.max(0, extraRunValue + delta);
+      document.getElementById('extra-run-count').textContent = extraRunValue;
+    }
+    function confirmExtraRun() {
+      hideModal('extra-run-modal');
+      if (extraRunCallback) extraRunCallback(extraRunValue);
+    }
+
+    // On load
+    loadState();
+    updateDisplay();
+    if (onCrease[0] === null || onCrease[1] === null) {
+      setTimeout(() => showBatsmanModal('openers', setOpeners), 200);
+    }
+
+    function setOpeners(n1, n2) {
+      batsmen = []; batsmenOrder = [];
+      batsmen.push({ name: n1, runs: 0, balls: 0, out: false, declared: false });
+      batsmen.push({ name: n2, runs: 0, balls: 0, out: false, declared: false });
+      batsmenOrder = [0,1]; onCrease = [0,1];
+      updateDisplay();
+    }
   </script>
 </body>
 </html>
