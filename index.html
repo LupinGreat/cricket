@@ -5,191 +5,43 @@
   <title>Cricket Run Counter</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body {
-      background: #e5f3ff;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 480px;
-      margin: 30px auto 0 auto;
-      background: #fff;
-      border-radius: 14px;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.11);
-      padding: 20px 16px 28px 16px;
-    }
-    .scoreboard {
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      gap: 12px;
-      font-size: 2.7rem;
-      margin-bottom: 10px;
-    }
-    .score {
-      font-size: 3.4rem;
-      font-weight: bold;
-      color: #1976d2;
-    }
-    .divider {
-      font-size: 2.6rem;
-      color: #888;
-    }
-    .overs {
-      font-size: 1.4rem;
-      margin-left: 14px;
-      color: #333;
-    }
-    .action-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      margin-top: 16px;
-      margin-bottom: 8px;
-    }
-    .my-btn {
-      padding: 13px 0;
-      width: 94px;
-      font-size: 1.06rem;
-      border: none;
-      border-radius: 8px;
-      background: #1976d2;
-      color: white;
-      cursor: pointer;
-      margin: 3px;
-      font-weight: 500;
-      transition: background 0.18s;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
+    body { background: #e5f3ff; font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    .container { max-width: 480px; margin: 30px auto 0 auto; background: #fff; border-radius: 14px; box-shadow: 0 4px 18px rgba(0,0,0,0.11); padding: 20px 16px 28px 16px; }
+    .scoreboard { display: flex; align-items: flex-end; justify-content: center; gap: 12px; font-size: 2.7rem; margin-bottom: 10px; }
+    .score { font-size: 3.4rem; font-weight: bold; color: #1976d2; }
+    .divider { font-size: 2.6rem; color: #888; }
+    .overs { font-size: 1.4rem; margin-left: 14px; color: #333; }
+    .action-buttons { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 16px; margin-bottom: 8px; }
+    .my-btn { padding: 13px 0; width: 94px; font-size: 1.06rem; border: none; border-radius: 8px; background: #1976d2; color: white; cursor: pointer; margin: 3px; font-weight: 500; transition: background 0.18s; box-shadow: 0 2px 8px rgba(0,0,0,0.05);}
     .my-btn:hover, .my-btn:focus { background: #0d47a1; }
     .my-btn.secondary { background: #f0f4c3; color: #393; }
     .my-btn.danger { background: #e57373; color: #fff; }
     .my-btn.grey { background: #eee; color: #333; }
-    .btn-group {
-      display: flex;
-      gap: 7px;
-      margin-bottom: 8px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .alert {
-      background: #e3f2fd;
-      color: #1565c0;
-      padding: 8px 10px;
-      border-radius: 6px;
-      text-align: center;
-      margin: 12px 0;
-      display: none;
-    }
+    .btn-group { display: flex; gap: 7px; margin-bottom: 8px; flex-wrap: wrap; justify-content: center; }
+    .alert { background: #e3f2fd; color: #1565c0; padding: 8px 10px; border-radius: 6px; text-align: center; margin: 12px 0; display: none; }
+    .top-buttons { display: flex; justify-content: space-between; margin-bottom: 10px; gap: 7px;}
+    .reset-btn { background: #ffecb3; color: #e65100; border: none; padding: 12px 0; border-radius: 8px; width: 140px; font-size: 1.06rem; font-weight: bold; cursor: pointer; }
+    .reset-btn:disabled { opacity: 0.6; cursor: not-allowed; }
     /* Modal styles */
-    .modal-backdrop {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.34);
-      z-index: 10;
-      display: none;
-    }
-    .modal {
-      position: fixed;
-      left: 50%; top: 50%;
-      transform: translate(-50%, -50%);
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 8px 36px rgba(0,0,0,0.19);
-      padding: 22px 20px 18px 20px;
-      z-index: 20;
-      min-width: 280px; max-width: 94vw;
-      display: none;
-      min-height: 80px;
-    }
-    .modal h2 {
-      font-size: 1.4rem;
-      margin-bottom: 8px;
-      color: #1976d2;
-    }
-    .close-modal {
-      position: absolute;
-      right: 12px;
-      top: 10px;
-      background: #eee;
-      border: none;
-      border-radius: 50%;
-      width: 28px;
-      height: 28px;
-      font-size: 1.25rem;
-      color: #777;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
+    .modal-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.34); z-index: 10; display: none;}
+    .modal { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 10px; box-shadow: 0 8px 36px rgba(0,0,0,0.19); padding: 22px 20px 18px 20px; z-index: 20; min-width: 280px; max-width: 94vw; display: none; min-height: 80px;}
+    .modal h2 { font-size: 1.4rem; margin-bottom: 8px; color: #1976d2; }
+    .close-modal { position: absolute; right: 12px; top: 10px; background: #eee; border: none; border-radius: 50%; width: 28px; height: 28px; font-size: 1.25rem; color: #777; cursor: pointer; transition: background 0.2s;}
     .close-modal:hover { background: #ffcdd2; color: #d32f2f; }
-    .controls {
-      display: flex;
-      justify-content: space-between;
-      margin: 12px 0 15px 0;
-      gap: 14px;
-    }
-    .controls label {
-      font-size: 1.05rem;
-      flex: 0 0 44%;
-      align-self: center;
-    }
-    .controls input[type="text"], .controls input[type="number"] {
-      width: 95px;
-      padding: 11px 9px;
-      border: 1.6px solid #bdbdbd;
-      border-radius: 6px;
-      font-size: 1.18rem;
-      text-align: left;
-    }
+    .controls { display: flex; justify-content: space-between; margin: 12px 0 15px 0; gap: 14px; }
+    .controls label { font-size: 1.05rem; flex: 0 0 44%; align-self: center; }
+    .controls input[type="text"], .controls input[type="number"] { width: 95px; padding: 11px 9px; border: 1.6px solid #bdbdbd; border-radius: 6px; font-size: 1.18rem; text-align: left; }
     /* Batsman display */
-    .batsmen-row {
-      margin: 12px 0 8px 0;
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      gap: 12px;
-    }
-    .batsman-box {
-      background: #e3f2fd;
-      padding: 8px 10px 5px 10px;
-      border-radius: 6px;
-      min-width: 40%;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    .batsman-name {
-      font-weight: bold;
-      color: #1565c0;
-      font-size: 1.15rem;
-      margin-bottom: 2px;
-    }
-    .batsman-score {
-      color: #1565c0;
-      font-size: 1rem;
-      margin-bottom: 1px;
-    }
-    .batsman-status {
-      font-size: 0.95rem;
-      color: #e57373;
-    }
-    .declare-btn {
-      margin-top: 4px;
-      padding: 4px 14px;
-      font-size: 0.98rem;
-      border-radius: 8px;
-      background: #ffecb3;
-      border: none;
-      color: #e65100;
-      cursor: pointer;
-    }
-    .declare-btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
+    .batsmen-row { margin: 12px 0 8px 0; display: flex; flex-direction: row; justify-content: space-between; gap: 12px; }
+    .batsman-box { background: #e3f2fd; padding: 8px 10px 5px 10px; border-radius: 6px; min-width: 40%; position: relative; display: flex; flex-direction: column; align-items: flex-start; }
+    .batsman-name { font-weight: bold; color: #1565c0; font-size: 1.15rem; margin-bottom: 2px; }
+    .batsman-score { color: #1565c0; font-size: 1rem; margin-bottom: 1px; }
+    .batsman-status { font-size: 0.95rem; color: #e57373; }
+    .declare-btn { margin-top: 4px; padding: 4px 14px; font-size: 0.98rem; border-radius: 8px; background: #ffecb3; border: none; color: #e65100; cursor: pointer;}
+    .declare-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    /* Player Score Modal */
+    #player-score-table { width: 100%; border-collapse: collapse; font-size: 1.04rem; }
+    #player-score-table th, #player-score-table td { border-bottom: 1px solid #e0e0e0; padding: 4px 5px; text-align: center; }
     @media (max-width: 550px) {
       .container { max-width: 99vw; padding: 7vw 1vw 13vw 1vw; }
       .my-btn { width: 46vw; max-width: 99vw; }
@@ -198,11 +50,16 @@
       .controls input[type="text"], .controls input[type="number"] { width: 40vw; min-width: 72px; }
       .batsmen-row { flex-direction: column; gap: 7px;}
       .batsman-box { min-width: 90%; }
+      .reset-btn { width: 99vw; margin-bottom: 8px;}
     }
   </style>
 </head>
 <body>
   <div class="container">
+    <div class="top-buttons">
+      <button class="my-btn secondary" id="player-score-btn">Show Players</button>
+      <button class="reset-btn" id="reset-btn" style="display:none;">Start New Score</button>
+    </div>
     <!-- Scoreboard Display -->
     <div class="scoreboard">
       <span id="run" class="score">0</span>
@@ -212,7 +69,6 @@
     </div>
     <!-- Batsmen Row -->
     <div class="batsmen-row" id="batsmen-row"></div>
-
     <!-- Action Buttons -->
     <div class="action-buttons" id="scoring-buttons">
       <div class="btn-group">
@@ -236,7 +92,6 @@
         <button class="my-btn" id="targetModeButton">Target mode</button>
       </div>
     </div>
-
     <!-- Target Alert -->
     <div class="alert" id="targetBoard">
       Require
@@ -247,7 +102,6 @@
       <button type="button" class="close-modal" style="float:right;margin-left:10px;" onclick="closeTargetAlert()">&times;</button>
     </div>
   </div>
-
   <!-- Scoreboard Modal -->
   <div class="modal-backdrop" id="modal-backdrop"></div>
   <div class="modal" id="scoreboard-modal">
@@ -255,7 +109,12 @@
     <h2>Scoreboard</h2>
     <div id="scoreboard-horizontal"></div>
   </div>
-
+  <!-- Player Score Modal -->
+  <div class="modal" id="player-score-modal">
+    <button class="close-modal" onclick="hideModal('player-score-modal')">&times;</button>
+    <h2>Player Scores</h2>
+    <div id="player-score-table-div"></div>
+  </div>
   <!-- Target Modal -->
   <div class="modal" id="target-modal">
     <button class="close-modal" onclick="closeTargetModal()">&times;</button>
@@ -281,91 +140,58 @@
       <button class="my-btn" type="submit" id="batsman-modal-submit">OK</button>
     </form>
   </div>
-
   <script>
     // --- State ---
-    let run = 0;
-    let wickets = 0;
-    let balls = 0;
-    let over = 0;
-    let scoreHistory = [];
-    let scoreboardBalls = [];
+    let run = 0, wickets = 0, balls = 0, over = 0;
+    let scoreHistory = [], scoreboardBalls = [];
+    let batsmen = [], batsmenOrder = [], onCrease = [null, null];
     let maxWickets = 10;
-
-    let batsmen = [];
-    let batsmenOrder = [];
-    let onCrease = [null, null]; // indexes to batsmen[]
     let declared = [];
+    let targetActive = false, targetRuns = 0, targetBalls = 0;
+    let scoringStarted = false;
 
-    let targetActive = false;
-    let targetRuns = 0;
-    let targetBalls = 0;
-
-    // Load from localStorage
     function loadState() {
       if (localStorage.getItem('scoreState')) {
         let state = JSON.parse(localStorage.getItem('scoreState'));
-        run = state.run;
-        wickets = state.wickets;
-        balls = state.balls;
-        over = state.over;
-        scoreHistory = state.scoreHistory || [];
-        scoreboardBalls = state.scoreboardBalls || [];
-        batsmen = state.batsmen || [];
-        batsmenOrder = state.batsmenOrder || [];
-        onCrease = state.onCrease || [null, null];
-        declared = state.declared || [];
-        targetActive = state.targetActive;
-        targetRuns = state.targetRuns;
-        targetBalls = state.targetBalls;
+        run = state.run; wickets = state.wickets; balls = state.balls; over = state.over;
+        scoreHistory = state.scoreHistory || []; scoreboardBalls = state.scoreboardBalls || [];
+        batsmen = state.batsmen || []; batsmenOrder = state.batsmenOrder || [];
+        onCrease = state.onCrease || [null, null]; declared = state.declared || [];
+        targetActive = state.targetActive; targetRuns = state.targetRuns; targetBalls = state.targetBalls;
+        scoringStarted = state.scoringStarted || false;
       }
     }
     function saveState() {
       localStorage.setItem('scoreState', JSON.stringify({
-        run, wickets, balls, over,
-        scoreHistory, scoreboardBalls,
+        run, wickets, balls, over, scoreHistory, scoreboardBalls,
         batsmen, batsmenOrder, onCrease, declared,
-        targetActive, targetRuns, targetBalls
+        targetActive, targetRuns, targetBalls, scoringStarted
       }));
     }
-
     function resetState() {
-      run = 0;
-      wickets = 0;
-      balls = 0;
-      over = 0;
-      scoreHistory = [];
-      scoreboardBalls = [];
-      batsmen = [];
-      batsmenOrder = [];
-      onCrease = [null, null];
-      declared = [];
-      targetActive = false;
-      targetRuns = 0;
-      targetBalls = 0;
-      saveState();
+      run = wickets = balls = over = 0;
+      scoreHistory = []; scoreboardBalls = [];
+      batsmen = []; batsmenOrder = []; onCrease = [null, null]; declared = [];
+      targetActive = false; targetRuns = targetBalls = 0;
+      scoringStarted = false;
+      saveState(); location.reload();
     }
-
     function updateDisplay() {
       document.getElementById('run').textContent = run;
       document.getElementById('wickets').textContent = wickets;
       document.getElementById('over-ball').textContent = `${over}.${balls}`;
       showBatsmen();
+      document.getElementById('reset-btn').style.display = scoringStarted ? '' : 'none';
       if(targetActive) updateTargetBoard();
       saveState();
     }
-
     function showBatsmen() {
-      let row = document.getElementById('batsmen-row');
-      row.innerHTML = "";
+      let row = document.getElementById('batsmen-row'); row.innerHTML = "";
       for(let i=0; i<2; ++i) {
         let idx = onCrease[i];
         if(idx === null || batsmen[idx] == null) continue;
         let b = batsmen[idx];
-        let status = "";
-        if(b.declared) status = "Declared";
-        else if(b.out) status = "Out";
-        else status = "Not out";
+        let status = b.declared ? "Declared" : (b.out ? "Out" : "Not out");
         row.innerHTML += `
           <div class="batsman-box">
             <div class="batsman-name">${b.name} ${i===0?"(Striker)":""}</div>
@@ -375,13 +201,11 @@
           </div>`;
       }
     }
-
     // Show modal for new batsmen
     function showBatsmanModal(type, callback) {
       document.getElementById('batsman-modal-title').textContent =
         (type==="openers") ? "Enter opening batsmen names" : "Enter new batsman name";
-      let inputs = document.getElementById('batsman-modal-inputs');
-      inputs.innerHTML = "";
+      let inputs = document.getElementById('batsman-modal-inputs'); inputs.innerHTML = "";
       if(type==="openers") {
         inputs.innerHTML += `<input type="text" id="batsman1" placeholder="Batsman 1" required style="margin-bottom:10px;"><br>
                              <input type="text" id="batsman2" placeholder="Batsman 2" required><br>`;
@@ -404,131 +228,78 @@
       }
       showModal('batsman-modal');
     }
-    function closeBatsmanModal() {
-      hideModal('batsman-modal');
-    }
-
-    // Add batsmen to list
+    function closeBatsmanModal() { hideModal('batsman-modal'); }
     function setOpeners(name1, name2) {
       batsmen.push({ name: name1, runs: 0, balls: 0, out: false, declared: false });
       batsmen.push({ name: name2, runs: 0, balls: 0, out: false, declared: false });
-      batsmenOrder = [0,1];
-      onCrease = [0,1];
-      updateDisplay();
+      batsmenOrder = [0,1]; onCrease = [0,1]; updateDisplay();
     }
     function addBatsman(name) {
       let idx = batsmen.length;
       batsmen.push({ name: name, runs: 0, balls: 0, out: false, declared: false });
       batsmenOrder.push(idx);
-      // Find which batsman is out/declared (set to null in onCrease)
       let toReplace = onCrease.findIndex(x=>x===null);
       if(toReplace !== -1) onCrease[toReplace] = idx;
       updateDisplay();
     }
-
-    // For Declare
     function declareBatsman(idx) {
       batsmen[idx].declared = true;
-      // Remove from onCrease
       let cidx = onCrease.indexOf(idx);
       if(cidx !== -1) onCrease[cidx] = null;
       updateDisplay();
-      // If possible, prompt for new batsman
       if(batsmen.length - batsmenOrder.length < maxWickets - wickets) {
         setTimeout(()=>showBatsmanModal("new", addBatsman), 300);
       }
     }
-    window.declareBatsman = declareBatsman; // needed for onclick
-
-    // --- Score/Undo Logic with Player Scores ---
+    window.declareBatsman = declareBatsman;
     function addScore(type, val=0) {
-      if(onCrease[0]==null || onCrease[1]==null) {
-        showBatsmanModal("openers", setOpeners);
-        return;
-      }
-      // Save state for undo (deep copy)
+      if(onCrease[0]==null || onCrease[1]==null) { showBatsmanModal("openers", setOpeners); return; }
+      scoringStarted = true;
       scoreHistory.push({
         run, wickets, balls, over,
         scoreboardBalls: JSON.stringify(scoreboardBalls),
         batsmen: JSON.stringify(batsmen),
         batsmenOrder: JSON.stringify(batsmenOrder),
-        onCrease: JSON.stringify(onCrease)
+        onCrease: JSON.stringify(onCrease),
+        scoringStarted
       });
-
       let strikerIdx = onCrease[0];
-      if (type === "dot") {
-        batsmen[strikerIdx].balls++;
-        nextBall(0, false, "Dot");
-      }
-      else if (type === "wide") {
-        run += 1;
-        recordExtraBall("Wide");
-      }
-      else if (type === "no_ball") {
-        run += 1;
-        recordExtraBall("No");
-      }
+      if (type === "dot") { batsmen[strikerIdx].balls++; nextBall(0, false, "Dot"); }
+      else if (type === "wide") { run += 1; recordExtraBall("Wide"); }
+      else if (type === "no_ball") { run += 1; recordExtraBall("No"); }
       else if (type === "run") {
-        batsmen[strikerIdx].balls++;
-        batsmen[strikerIdx].runs += val;
-        nextBall(val, false, val);
-        // Change strike if run is odd
-        if(val%2===1) onCrease = [onCrease[1], onCrease[0]];
+        batsmen[strikerIdx].balls++; batsmen[strikerIdx].runs += val;
+        nextBall(val, false, val); if(val%2===1) onCrease = [onCrease[1], onCrease[0]];
       }
       else if (type === "wicket") {
-        batsmen[strikerIdx].balls++;
-        batsmen[strikerIdx].out = true;
-        nextBall(0, true, "Wicket");
-        onCrease[0] = null; // striker is out
-        wickets++;
+        batsmen[strikerIdx].balls++; batsmen[strikerIdx].out = true;
+        nextBall(0, true, "Wicket"); onCrease[0] = null; wickets++;
         setTimeout(()=>showBatsmanModal("new", addBatsman), 300);
       }
-
       updateDisplay();
     }
-
     function nextBall(runs, isWicket, display) {
-      run += runs;
-      recordNormalBall(display, isWicket);
-      balls += 1;
-      if(balls >= 6) {
-        balls = 0;
-        over += 1;
-        // Change strike at over end
-        onCrease = [onCrease[1], onCrease[0]];
-      }
+      run += runs; recordNormalBall(display, isWicket); balls += 1;
+      if(balls >= 6) { balls = 0; over += 1; onCrease = [onCrease[1], onCrease[0]]; }
     }
     function recordNormalBall(result, isWicket) {
-      scoreboardBalls.push({
-        over: over,
-        ball: balls + 1,
-        result: result
-      });
+      scoreboardBalls.push({ over: over, ball: balls + 1, result: result });
     }
     function recordExtraBall(type) {
-      scoreboardBalls.push({
-        over: over,
-        ball: balls + 1,
-        result: type
-      });
+      scoreboardBalls.push({ over: over, ball: balls + 1, result: type });
     }
-
     function undo() {
       alert('ਪਹਿਲਾਂ ਸਹੀ ਦੱਸ ਦਿੰਦਾ ਸਾਲਿਆ');
       if(scoreHistory.length === 0) return;
       let prev = scoreHistory.pop();
-      run = prev.run;
-      wickets = prev.wickets;
-      balls = prev.balls;
-      over = prev.over;
+      run = prev.run; wickets = prev.wickets; balls = prev.balls; over = prev.over;
       scoreboardBalls = JSON.parse(prev.scoreboardBalls || "[]");
       batsmen = JSON.parse(prev.batsmen || "[]");
       batsmenOrder = JSON.parse(prev.batsmenOrder || "[]");
       onCrease = JSON.parse(prev.onCrease || "[null,null]");
+      scoringStarted = prev.scoringStarted;
       updateDisplay();
     }
-
-    // --- Bind buttons ---
     document.getElementById('run_dot').onclick = () => addScore("dot");
     document.getElementById('run_wide').onclick = () => addScore("wide");
     document.getElementById('run_no_ball').onclick = () => addScore("no_ball");
@@ -540,17 +311,14 @@
     document.getElementById('run_W').onclick = () => addScore("wicket");
     document.getElementById('undo-btn').onclick = () => undo();
 
-    // --- Scoreboard Modal: Horizontal layout ---
-    document.getElementById('scoreboard-btn').onclick = function() {
-      openModal();
-    };
+    // Show horizontal scoreboard by over
+    document.getElementById('scoreboard-btn').onclick = function() { openModal(); };
     function openModal() {
       let div = document.getElementById('scoreboard-horizontal');
       div.innerHTML = "";
       let overs = {};
       for(let i=0; i<scoreboardBalls.length; ++i) {
-        let b = scoreboardBalls[i];
-        let o = b.over;
+        let b = scoreboardBalls[i], o = b.over;
         if(!overs[o]) overs[o]=[];
         overs[o].push(`${b.over}.${b.ball} - ${b.result}`);
       }
@@ -561,19 +329,21 @@
     }
     function closeModal() { hideModal('scoreboard-modal'); }
 
+    // Player Score Modal
+    document.getElementById('player-score-btn').onclick = function() {
+      let div = document.getElementById('player-score-table-div');
+      let outMark = b => b.out ? "Out" : (b.declared ? "Declared" : "Not out");
+      let rows = batsmen.map(b=>`<tr><td>${b.name}</td><td>${b.runs}</td><td>${b.balls}</td><td>${outMark(b)}</td></tr>`).join('');
+      div.innerHTML = `<table id="player-score-table">
+        <tr><th>Name</th><th>Runs</th><th>Balls</th><th>Status</th></tr>${rows}</table>`;
+      showModal('player-score-modal');
+    };
+
     // --- Modal logic ---
-    function showModal(id) {
-      document.getElementById('modal-backdrop').style.display = 'block';
-      document.getElementById(id).style.display = 'block';
-    }
-    function hideModal(id) {
-      document.getElementById('modal-backdrop').style.display = 'none';
-      document.getElementById(id).style.display = 'none';
-    }
+    function showModal(id) { document.getElementById('modal-backdrop').style.display = 'block'; document.getElementById(id).style.display = 'block'; }
+    function hideModal(id) { document.getElementById('modal-backdrop').style.display = 'none'; document.getElementById(id).style.display = 'none'; }
     document.getElementById('modal-backdrop').onclick = function() {
-      hideModal('scoreboard-modal');
-      hideModal('target-modal');
-      hideModal('batsman-modal');
+      hideModal('scoreboard-modal'); hideModal('target-modal'); hideModal('batsman-modal'); hideModal('player-score-modal');
     };
 
     // --- Target Mode ---
@@ -584,24 +354,14 @@
     };
     function closeTargetModal() { hideModal('target-modal'); }
     function setTarget() {
-      let runBox = document.getElementById('targetRuns');
-      let overBox = document.getElementById('targetOvers');
+      let runBox = document.getElementById('targetRuns'), overBox = document.getElementById('targetOvers');
       targetRuns = parseInt(runBox.value) || 0;
       let overs = parseInt(overBox.value) || 1;
-      targetBalls = overs * 6;
-      targetActive = true;
-      closeTargetModal();
-      showTargetAlert();
-      updateTargetBoard();
+      targetBalls = overs * 6; targetActive = true;
+      closeTargetModal(); showTargetAlert(); updateTargetBoard();
     }
-    function showTargetAlert() {
-      document.getElementById('targetBoard').style.display = 'block';
-    }
-    function closeTargetAlert() {
-      document.getElementById('targetBoard').style.display = 'none';
-      targetActive = false;
-      saveState();
-    }
+    function showTargetAlert() { document.getElementById('targetBoard').style.display = 'block'; }
+    function closeTargetAlert() { document.getElementById('targetBoard').style.display = 'none'; targetActive = false; saveState(); }
     function updateTargetBoard() {
       let runsLeft = Math.max(0, targetRuns - run);
       let ballsLeft = Math.max(0, targetBalls - (over*6 + balls));
@@ -610,13 +370,14 @@
       saveState();
     }
 
-    // --- Initial UI ---
-    loadState();
-    updateDisplay();
-    // Ask for openers if needed on page load
-    if(onCrease[0]==null||onCrease[1]==null) {
-      setTimeout(()=>showBatsmanModal("openers", setOpeners), 200);
-    }
+    // Reset/new score button
+    document.getElementById('reset-btn').onclick = function() {
+      if(confirm("Do you want to count a new score?")) resetState();
+    };
+
+    // Initial UI
+    loadState(); updateDisplay();
+    if(onCrease[0]==null||onCrease[1]==null) setTimeout(()=>showBatsmanModal("openers", setOpeners), 200);
   </script>
 </body>
 </html>
