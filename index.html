@@ -60,16 +60,13 @@
       <button class="my-btn secondary" id="player-score-btn">Show Players</button>
       <button class="reset-btn" id="reset-btn" style="display:none;">Start New Score</button>
     </div>
-    <!-- Scoreboard Display -->
     <div class="scoreboard">
       <span id="run" class="score">0</span>
       <span class="divider">/</span>
       <span id="wickets" class="score">0</span>
       <span id="over-ball" class="overs">0</span>
     </div>
-    <!-- Batsmen Row -->
     <div class="batsmen-row" id="batsmen-row"></div>
-    <!-- Action Buttons -->
     <div class="action-buttons" id="scoring-buttons">
       <div class="btn-group">
         <button class="my-btn grey" id="run_dot">Dot</button>
@@ -92,30 +89,23 @@
         <button class="my-btn" id="targetModeButton">Target mode</button>
       </div>
     </div>
-    <!-- Target Alert -->
     <div class="alert" id="targetBoard">
-      Require
-      <span id="targetRunsRequired" style="font-weight: bold;"></span>
-      runs in
-      <span id="targetOversLeft" style="font-weight: bold;"></span>
-      balls
+      Require <span id="targetRunsRequired" style="font-weight: bold;"></span>
+      runs in <span id="targetOversLeft" style="font-weight: bold;"></span> balls
       <button type="button" class="close-modal" style="float:right;margin-left:10px;" onclick="closeTargetAlert()">&times;</button>
     </div>
   </div>
-  <!-- Scoreboard Modal -->
   <div class="modal-backdrop" id="modal-backdrop"></div>
   <div class="modal" id="scoreboard-modal">
     <button class="close-modal" onclick="closeModal()">&times;</button>
     <h2>Scoreboard</h2>
     <div id="scoreboard-horizontal"></div>
   </div>
-  <!-- Player Score Modal -->
   <div class="modal" id="player-score-modal">
     <button class="close-modal" onclick="hideModal('player-score-modal')">&times;</button>
     <h2>Player Scores</h2>
     <div id="player-score-table-div"></div>
   </div>
-  <!-- Target Modal -->
   <div class="modal" id="target-modal">
     <button class="close-modal" onclick="closeTargetModal()">&times;</button>
     <h2>Enter Target</h2>
@@ -131,7 +121,6 @@
       <button class="my-btn" type="submit">Set Target</button>
     </form>
   </div>
-  <!-- Player Name Modal -->
   <div class="modal" id="batsman-modal">
     <button class="close-modal" onclick="closeBatsmanModal()">&times;</button>
     <h2 id="batsman-modal-title"></h2>
@@ -265,15 +254,34 @@
       });
       let strikerIdx = onCrease[0];
       if (type === "dot") { batsmen[strikerIdx].balls++; nextBall(0, false, "Dot"); }
-      else if (type === "wide") { run += 1; recordExtraBall("Wide"); }
-      else if (type === "no_ball") { run += 1; recordExtraBall("No"); }
+      else if (type === "wide") {
+        run += 1;
+        let extraRuns = prompt("Enter runs scored by batsmen on this Wide (leave blank for 0):", "0");
+        extraRuns = parseInt(extraRuns) || 0;
+        if(extraRuns>0) batsmen[strikerIdx].runs += extraRuns, batsmen[strikerIdx].balls++;
+        let label = extraRuns > 0 ? `${extraRuns} (Wide)` : "Wide";
+        recordExtraBall(label);
+      }
+      else if (type === "no_ball") {
+        run += 1;
+        let extraRuns = prompt("Enter runs scored by batsmen on this No ball (leave blank for 0):", "0");
+        extraRuns = parseInt(extraRuns) || 0;
+        if(extraRuns>0) batsmen[strikerIdx].runs += extraRuns, batsmen[strikerIdx].balls++;
+        let label = extraRuns > 0 ? `${extraRuns} (No)` : "No";
+        recordExtraBall(label);
+      }
       else if (type === "run") {
         batsmen[strikerIdx].balls++; batsmen[strikerIdx].runs += val;
         nextBall(val, false, val); if(val%2===1) onCrease = [onCrease[1], onCrease[0]];
       }
       else if (type === "wicket") {
-        batsmen[strikerIdx].balls++; batsmen[strikerIdx].out = true;
-        nextBall(0, true, "Wicket"); onCrease[0] = null; wickets++;
+        let runsBeforeWicket = prompt("Enter runs taken on this ball before wicket (leave blank for 0):", "0");
+        runsBeforeWicket = parseInt(runsBeforeWicket) || 0;
+        if(runsBeforeWicket>0) batsmen[strikerIdx].runs += runsBeforeWicket, batsmen[strikerIdx].balls++;
+        batsmen[strikerIdx].balls++;
+        batsmen[strikerIdx].out = true;
+        let label = runsBeforeWicket>0 ? `${runsBeforeWicket} (Wicket)` : "Wicket";
+        nextBall(runsBeforeWicket, true, label); onCrease[0] = null; wickets++;
         setTimeout(()=>showBatsmanModal("new", addBatsman), 300);
       }
       updateDisplay();
@@ -311,7 +319,6 @@
     document.getElementById('run_W').onclick = () => addScore("wicket");
     document.getElementById('undo-btn').onclick = () => undo();
 
-    // Show horizontal scoreboard by over
     document.getElementById('scoreboard-btn').onclick = function() { openModal(); };
     function openModal() {
       let div = document.getElementById('scoreboard-horizontal');
@@ -329,7 +336,6 @@
     }
     function closeModal() { hideModal('scoreboard-modal'); }
 
-    // Player Score Modal
     document.getElementById('player-score-btn').onclick = function() {
       let div = document.getElementById('player-score-table-div');
       let outMark = b => b.out ? "Out" : (b.declared ? "Declared" : "Not out");
@@ -339,14 +345,12 @@
       showModal('player-score-modal');
     };
 
-    // --- Modal logic ---
     function showModal(id) { document.getElementById('modal-backdrop').style.display = 'block'; document.getElementById(id).style.display = 'block'; }
     function hideModal(id) { document.getElementById('modal-backdrop').style.display = 'none'; document.getElementById(id).style.display = 'none'; }
     document.getElementById('modal-backdrop').onclick = function() {
       hideModal('scoreboard-modal'); hideModal('target-modal'); hideModal('batsman-modal'); hideModal('player-score-modal');
     };
 
-    // --- Target Mode ---
     document.getElementById('targetModeButton').onclick = function() {
       document.getElementById('targetRuns').value = targetRuns || 100;
       document.getElementById('targetOvers').value = (targetBalls ? (targetBalls/6) : 10);
@@ -370,12 +374,10 @@
       saveState();
     }
 
-    // Reset/new score button
     document.getElementById('reset-btn').onclick = function() {
       if(confirm("Do you want to count a new score?")) resetState();
     };
 
-    // Initial UI
     loadState(); updateDisplay();
     if(onCrease[0]==null||onCrease[1]==null) setTimeout(()=>showBatsmanModal("openers", setOpeners), 200);
   </script>
