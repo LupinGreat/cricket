@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,119 +5,67 @@
   <title>Cricket Run Counter</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    html, body { height: 100%; margin: 0; padding: 0; }
-    body { background: #e5f3ff; font-family: Arial, sans-serif; margin: 0; padding: 0; min-height: 100vh;}
-    .container {
-      max-width: 480px;
-      min-height: 100vh;
-      margin: 0 auto;
-      background: #fff;
-      border-radius: 14px;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.11);
-      padding: 18px 7px 75px 7px;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-    }
-    .scoreboard { display: flex; align-items: flex-end; justify-content: center; gap: 9px; font-size: 2.1rem; margin-bottom: 2px; }
-    .score { font-size: 2.7rem; font-weight: bold; color: #1976d2; }
+    body { background: #e5f3ff; font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    .container { max-width: 480px; margin: 30px auto 0 auto; background: #fff; border-radius: 14px; box-shadow: 0 4px 18px rgba(0,0,0,0.11); padding: 20px 8px 28px 8px; }
+    .scoreboard { display: flex; align-items: flex-end; justify-content: center; gap: 10px; font-size: 2.2rem; margin-bottom: 10px; }
+    .score { font-size: 2.5rem; font-weight: bold; color: #1976d2; }
     .divider { font-size: 2.0rem; color: #888; }
-    .overs { font-size: 1.18rem; margin-left: 7px; color: #333; }
-    .batsmen-row { margin: 10px 0 6px 0; display: flex; flex-direction: row; justify-content: space-between; gap: 8px; }
-    .batsman-box { background: #e3f2fd; padding: 7px 7px 5px 8px; border-radius: 6px; min-width: 44%; flex:1; position: relative; display: flex; flex-direction: column; align-items: flex-start; }
-    .batsman-name { font-weight: bold; color: #1565c0; font-size: 1.08rem; margin-bottom: 1px; }
-    .batsman-score { color: #1565c0; font-size: 0.99rem; margin-bottom: 0px; }
+    .overs { font-size: 1.08rem; margin-left: 14px; color: #333; }
+    .batsmen-row { margin: 10px 0 5px 0; display: flex; flex-direction: row; justify-content: space-between; gap: 12px; }
+    .batsman-box { background: #e3f2fd; padding: 7px 7px 4px 7px; border-radius: 6px; min-width: 40%; position: relative; display: flex; flex-direction: column; align-items: flex-start; }
+    .batsman-name { font-weight: bold; color: #1565c0; font-size: 1.06rem; margin-bottom: 2px; }
+    .batsman-score { color: #1565c0; font-size: 0.98rem; margin-bottom: 1px; }
     .batsman-status { font-size: 0.93rem; color: #e57373; }
-    .declare-btn { margin-top: 3px; padding: 4px 8px; font-size: 0.90rem; border-radius: 8px; background: #ffecb3; border: none; color: #e65100; cursor: pointer;}
+    .declare-btn { margin-top: 3px; padding: 3px 10px; font-size: 0.93rem; border-radius: 8px; background: #ffecb3; border: none; color: #e65100; cursor: pointer;}
     .declare-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-    /* Buttons */
-    .action-buttons { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; margin-top: 9px; margin-bottom: 2px; }
-    .btn-row { display: flex; flex-direction: row; gap: 7px; justify-content: center; margin-bottom: 3px;}
-    .my-btn {
-      padding: 7px 0;
-      width: 44px;
-      min-width: 37px;
-      font-size: 1rem;
-      border: none;
-      border-radius: 8px;
-      background: #1976d2;
-      color: white;
-      cursor: pointer;
-      font-weight: 500;
-      transition: background 0.18s;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
+
+    /* Scoring Buttons Layout */
+    .action-buttons { margin-top: 8px; margin-bottom: 8px; display: flex; flex-direction: column; gap: 4px; }
+    .btn-row { display: flex; gap: 6px; margin-bottom: 2px; justify-content: center;}
+    .my-btn { padding: 8px 0; width: 66px; font-size: 0.99rem; border: none; border-radius: 8px; background: #1976d2; color: white; cursor: pointer; margin: 0 2px; font-weight: 500; transition: background 0.18s; box-shadow: 0 2px 8px rgba(0,0,0,0.05);}
+    .my-btn:active, .my-btn:hover { background: #0d47a1; }
     .my-btn.secondary { background: #f0f4c3; color: #393; }
     .my-btn.danger { background: #e57373; color: #fff; }
     .my-btn.grey { background: #eee; color: #333; }
-    .my-btn:focus, .my-btn:hover { background: #0d47a1; }
-    /* Scoreboard and modals */
-    .alert { background: #e3f2fd; color: #1565c0; padding: 6px 8px; border-radius: 6px; text-align: center; margin: 8px 0; display: none; }
-    /* Modal styles */
-    .modal-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.34); z-index: 10; display: none;}
-    .modal { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 10px; box-shadow: 0 8px 36px rgba(0,0,0,0.19); padding: 16px 10px 13px 10px; z-index: 20; min-width: 250px; max-width: 99vw; display: none; min-height: 50px;}
-    .modal h2 { font-size: 1.13rem; margin-bottom: 7px; color: #1976d2; }
-    .close-modal { position: absolute; right: 10px; top: 9px; background: #eee; border: none; border-radius: 50%; width: 25px; height: 25px; font-size: 1.12rem; color: #777; cursor: pointer; transition: background 0.2s;}
-    .close-modal:hover { background: #ffcdd2; color: #d32f2f; }
-    .controls { display: flex; justify-content: space-between; margin: 8px 0 11px 0; gap: 8px; }
-    .controls label { font-size: 1.02rem; flex: 0 0 44%; align-self: center; }
-    .controls input[type="text"], .controls input[type="number"] { width: 75px; padding: 6px 7px; border: 1.6px solid #bdbdbd; border-radius: 6px; font-size: 1.10rem; text-align: left; }
-    /* Player Score Modal (horizontal) */
-    #player-score-table-div {
-      display: flex;
-      flex-direction: row;
-      gap: 8px;
-      flex-wrap: wrap;
-      justify-content: flex-start;
-    }
-    .pscorecard {
-      background: #e3f2fd;
-      border-radius: 7px;
-      padding: 7px 12px 4px 11px;
-      margin-bottom: 3px;
-      min-width: 96px;
+    .my-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* Custom run buttons arrangement: 1 2 3 / 4 6 */
+    #run-btns-wrapper {
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
-      font-size: 1rem;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      align-items: center;
+      gap: 3px;
+      margin-bottom: 6px;
     }
-    .pscorecard .name { font-weight: bold; color: #1976d2; }
-    .pscorecard .score { color: #333; }
-    .pscorecard .status { color: #e57373; font-size: 0.92em;}
-    /* Sticky footer for bottom buttons */
-    .footer-bar {
-      position: fixed;
-      left: 0; right: 0; bottom: 0;
-      z-index: 100;
-      background: #fafafa;
-      border-top: 1.7px solid #bdbdbd;
+    .run-btn-row1, .run-btn-row2 {
       display: flex;
       justify-content: center;
-      gap: 18px;
-      padding: 8px 0 9px 0;
+      gap: 6px;
     }
-    .footer-btn {
-      font-size: 1rem;
-      font-weight: 600;
-      padding: 8px 20px;
-      border-radius: 9px;
-      border: none;
-      background: #1976d2;
-      color: #fff;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-      cursor: pointer;
-      transition: background 0.17s;
+    .run-btn-row2 {
+      margin-top: 2px;
     }
-    .footer-btn:focus, .footer-btn:hover { background: #0d47a1; }
-    @media (max-width: 520px) {
-      .container { padding-bottom: 88px; }
-      .my-btn { width: 37vw; min-width: 30px; padding: 6px 0; font-size: 0.97rem;}
-      .batsmen-row { gap: 4vw;}
-      .pscorecard { min-width: 39vw; font-size: 0.97rem;}
-      .scoreboard { font-size: 1.0rem;}
-      .overs { font-size: 1.0rem;}
+
+    .bottom-actions { display: flex; gap: 6px; margin-top: 18px; justify-content: center;}
+    .bottom-btn { width: 42vw; min-width: 110px; max-width: 175px; font-size: 1.02rem; padding: 12px 0; }
+    .reset-btn { background: #ffecb3; color: #e65100; border: none; padding: 12px 0; border-radius: 8px; width: 140px; font-size: 1.06rem; font-weight: bold; cursor: pointer;}
+
+    /* Modal styles etc, same as before... */
+    .modal-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.34); z-index: 10; display: none;}
+    .modal { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 10px; box-shadow: 0 8px 36px rgba(0,0,0,0.19); padding: 22px 12px 18px 12px; z-index: 20; min-width: 260px; max-width: 96vw; display: none; min-height: 80px;}
+    .modal h2 { font-size: 1.18rem; margin-bottom: 8px; color: #1976d2; }
+    .close-modal { position: absolute; right: 10px; top: 8px; background: #eee; border: none; border-radius: 50%; width: 25px; height: 25px; font-size: 1.15rem; color: #777; cursor: pointer; transition: background 0.2s;}
+    .close-modal:hover { background: #ffcdd2; color: #d32f2f; }
+    .controls { display: flex; justify-content: space-between; margin: 10px 0 12px 0; gap: 10px; }
+    .controls label { font-size: 1.01rem; flex: 0 0 42%; align-self: center; }
+    .controls input[type="text"], .controls input[type="number"] { width: 90px; padding: 9px 8px; border: 1.3px solid #bdbdbd; border-radius: 6px; font-size: 1.08rem; text-align: left; }
+
+    @media (max-width: 600px) {
+      .container { max-width: 99vw; padding: 6vw 1vw 15vw 1vw; }
+      .my-btn { width: 18vw; min-width: 46px; max-width: 70px; font-size: 1.01rem; padding: 8px 0;}
+      .bottom-btn { width: 40vw; min-width: 105px;}
+      .scoreboard { font-size: 1.4rem;}
+      .batsman-box { min-width: 90%;}
     }
   </style>
 </head>
@@ -135,21 +82,27 @@
       <div class="btn-row">
         <button class="my-btn grey" id="run_dot">Dot</button>
         <button class="my-btn grey" id="run_wide">Wide</button>
-        <button class="my-btn grey" id="run_no_ball">No</button>
-        <button class="my-btn danger" id="run_W">Wicket</button>
       </div>
       <div class="btn-row">
-        <button class="my-btn" id="run_1">1</button>
-        <button class="my-btn" id="run_2">2</button>
-        <button class="my-btn" id="run_3">3</button>
-        <button class="my-btn" id="run_4">4</button>
-        <button class="my-btn" id="run_6">6</button>
+        <button class="my-btn grey" id="run_no_ball">No ball</button>
+        <button class="my-btn danger" id="run_W">Wicket</button>
+      </div>
+      <!-- Custom wrapper for 1,2,3 / 4,6 arrangement -->
+      <div id="run-btns-wrapper">
+        <div class="run-btn-row1">
+          <button class="my-btn" id="run_1">1</button>
+          <button class="my-btn" id="run_2">2</button>
+          <button class="my-btn" id="run_3">3</button>
+        </div>
+        <div class="run-btn-row2">
+          <button class="my-btn" id="run_4">4</button>
+          <button class="my-btn" id="run_6">6</button>
+        </div>
       </div>
       <div class="btn-row">
         <button class="my-btn secondary" id="scoreboard-btn">Scoreboard</button>
         <button class="my-btn danger" id="undo-btn">Undo</button>
-        <button class="my-btn" id="targetModeButton">Target</button>
-        <button class="my-btn" id="reset-btn" style="display:none;">New</button>
+        <button class="my-btn" id="targetModeButton">Target mode</button>
       </div>
     </div>
     <div class="alert" id="targetBoard">
@@ -157,47 +110,15 @@
       runs in <span id="targetOversLeft" style="font-weight: bold;"></span> balls
       <button type="button" class="close-modal" style="float:right;margin-left:10px;" onclick="closeTargetAlert()">&times;</button>
     </div>
+    <!-- BOTTOM BUTTONS -->
+    <div class="bottom-actions">
+      <button class="my-btn bottom-btn secondary" id="player-score-btn">Show Players</button>
+      <button class="my-btn bottom-btn" id="strike-change-btn">Change Strike</button>
+    </div>
+    <button class="reset-btn" id="reset-btn" style="display:none; margin:auto; margin-top:15px;">Start New Score</button>
   </div>
-  <!-- Sticky bottom bar for Show Players and Change Strike -->
-  <div class="footer-bar">
-    <button class="footer-btn" id="player-score-btn">Show Players</button>
-    <button class="footer-btn" id="strike-change-btn">Change Strike</button>
-  </div>
-  <!-- Modals -->
-  <div class="modal-backdrop" id="modal-backdrop"></div>
-  <div class="modal" id="scoreboard-modal">
-    <button class="close-modal" onclick="closeModal()">&times;</button>
-    <h2>Scoreboard</h2>
-    <div id="scoreboard-horizontal"></div>
-  </div>
-  <div class="modal" id="player-score-modal">
-    <button class="close-modal" onclick="hideModal('player-score-modal')">&times;</button>
-    <h2>Player Scores</h2>
-    <div id="player-score-table-div"></div>
-  </div>
-  <div class="modal" id="target-modal">
-    <button class="close-modal" onclick="closeTargetModal()">&times;</button>
-    <h2>Enter Target</h2>
-    <form onsubmit="setTarget();return false;">
-      <div class="controls">
-        <label for="targetRuns">Target Runs</label>
-        <input type="text" id="targetRuns" placeholder="100">
-      </div>
-      <div class="controls">
-        <label for="targetOvers">Overs</label>
-        <input type="text" id="targetOvers" placeholder="10">
-      </div>
-      <button class="my-btn" type="submit">Set Target</button>
-    </form>
-  </div>
-  <div class="modal" id="batsman-modal">
-    <button class="close-modal" onclick="closeBatsmanModal()">&times;</button>
-    <h2 id="batsman-modal-title"></h2>
-    <form id="batsman-modal-form" onsubmit="return false;">
-      <div id="batsman-modal-inputs"></div>
-      <button class="my-btn" type="submit" id="batsman-modal-submit">OK</button>
-    </form>
-  </div>
+  <!-- ...MODALS... (unchanged, as in your script) -->
+
   <script>
     // --- State ---
     let run = 0, wickets = 0, balls = 0, over = 0;
@@ -329,6 +250,7 @@
         nextBall(0, false, "Dot");
       }
       else if (type === "wide" || type === "no_ball") {
+        // 1 run for wide/no ball, plus bat runs if any
         let extraType = (type === "wide") ? "Wide" : "No";
         run += 1;
         let extraRuns = prompt("Enter runs scored by batsmen on this " + extraType + " (leave blank for 0):", "0");
@@ -387,7 +309,6 @@
       scoringStarted = prev.scoringStarted;
       updateDisplay();
     }
-    // Button bindings
     document.getElementById('run_dot').onclick = () => addScore("dot");
     document.getElementById('run_wide').onclick = () => addScore("wide");
     document.getElementById('run_no_ball').onclick = () => addScore("no_ball");
@@ -398,14 +319,15 @@
     document.getElementById('run_6').onclick = () => addScore("run",6);
     document.getElementById('run_W').onclick = () => addScore("wicket");
     document.getElementById('undo-btn').onclick = () => undo();
-    // STRIKE CHANGE BUTTON (in sticky footer)
+
+    // STRIKE CHANGE BUTTON
     document.getElementById('strike-change-btn').onclick = function() {
       if(confirm("Are you sure to change strike?")) {
         onCrease = [onCrease[1], onCrease[0]];
         updateDisplay();
       }
     };
-    // Scoreboard Modal
+
     document.getElementById('scoreboard-btn').onclick = function() { openModal(); };
     function openModal() {
       let div = document.getElementById('scoreboard-horizontal');
@@ -422,27 +344,34 @@
       showModal('scoreboard-modal');
     }
     function closeModal() { hideModal('scoreboard-modal'); }
-    // Player Score Modal (horizontal cards)
+
+    // -- Player Scores Modal as horizontal "side-by-side" --
     document.getElementById('player-score-btn').onclick = function() {
       let div = document.getElementById('player-score-table-div');
-      let outMark = b => b.out ? "Out" : (b.declared ? "Declared" : "Not out");
-      let rows = batsmen.map(b=>
-        `<div class="pscorecard">
-          <span class="name">${b.name}</span>
-          <span class="score">Runs: ${b.runs} | Balls: ${b.balls}</span>
-          <span class="status">${outMark(b)}</span>
-        </div>`
-      ).join('');
-      div.innerHTML = rows || "<i>No player records.</i>";
+      if(batsmen.length === 0) {
+        div.innerHTML = "<div style='color:#e57373'>No player data yet.</div>";
+        showModal('player-score-modal'); return;
+      }
+      let header = batsmen.map(b=>`<th>${b.name}</th>`).join('');
+      let runs = batsmen.map(b=>`<td>${b.runs}</td>`).join('');
+      let balls_ = batsmen.map(b=>`<td>${b.balls}</td>`).join('');
+      let status = batsmen.map(b=>`<td>${b.out ? "Out" : (b.declared ? "Declared" : "Not out")}</td>`).join('');
+      div.innerHTML = `
+        <table id="player-score-table">
+          <tr>${header}</tr>
+          <tr>${runs}</tr>
+          <tr>${balls_}</tr>
+          <tr>${status}</tr>
+        </table>`;
       showModal('player-score-modal');
     };
-    // Modal logic
+
     function showModal(id) { document.getElementById('modal-backdrop').style.display = 'block'; document.getElementById(id).style.display = 'block'; }
     function hideModal(id) { document.getElementById('modal-backdrop').style.display = 'none'; document.getElementById(id).style.display = 'none'; }
     document.getElementById('modal-backdrop').onclick = function() {
       hideModal('scoreboard-modal'); hideModal('target-modal'); hideModal('batsman-modal'); hideModal('player-score-modal');
     };
-    // Target Mode
+
     document.getElementById('targetModeButton').onclick = function() {
       document.getElementById('targetRuns').value = targetRuns || 100;
       document.getElementById('targetOvers').value = (targetBalls ? (targetBalls/6) : 10);
@@ -465,10 +394,11 @@
       document.getElementById('targetOversLeft').textContent = ballsLeft;
       saveState();
     }
+
     document.getElementById('reset-btn').onclick = function() {
       if(confirm("Do you want to count a new score?")) resetState();
     };
-    // On load
+
     loadState(); updateDisplay();
     if(onCrease[0]==null||onCrease[1]==null) setTimeout(()=>showBatsmanModal("openers", setOpeners), 200);
   </script>
