@@ -58,6 +58,7 @@
   <div class="container">
     <div class="top-buttons">
       <button class="my-btn secondary" id="player-score-btn">Show Players</button>
+      <button class="my-btn" id="strike-change-btn">Change Strike</button>
       <button class="reset-btn" id="reset-btn" style="display:none;">Start New Score</button>
     </div>
     <div class="scoreboard">
@@ -241,6 +242,8 @@
       }
     }
     window.declareBatsman = declareBatsman;
+
+    // ---- Core Cricket Logic ----
     function addScore(type, val=0) {
       if(onCrease[0]==null || onCrease[1]==null) { showBatsmanModal("openers", setOpeners); return; }
       scoringStarted = true;
@@ -253,35 +256,46 @@
         scoringStarted
       });
       let strikerIdx = onCrease[0];
-      if (type === "dot") { batsmen[strikerIdx].balls++; nextBall(0, false, "Dot"); }
-      else if (type === "wide") {
-        run += 1;
-        let extraRuns = prompt("Enter runs scored by batsmen on this Wide (leave blank for 0):", "0");
-        extraRuns = parseInt(extraRuns) || 0;
-        if(extraRuns>0) batsmen[strikerIdx].runs += extraRuns, batsmen[strikerIdx].balls++;
-        let label = extraRuns > 0 ? `${extraRuns} (Wide)` : "Wide";
-        recordExtraBall(label);
+      if (type === "dot") {
+        batsmen[strikerIdx].balls++;
+        nextBall(0, false, "Dot");
       }
-      else if (type === "no_ball") {
+      else if (type === "wide" || type === "no_ball") {
+        // 1 run for wide/no ball, plus bat runs if any
+        let extraType = (type === "wide") ? "Wide" : "No";
         run += 1;
-        let extraRuns = prompt("Enter runs scored by batsmen on this No ball (leave blank for 0):", "0");
+        let extraRuns = prompt("Enter runs scored by batsmen on this " + extraType + " (leave blank for 0):", "0");
         extraRuns = parseInt(extraRuns) || 0;
-        if(extraRuns>0) batsmen[strikerIdx].runs += extraRuns, batsmen[strikerIdx].balls++;
-        let label = extraRuns > 0 ? `${extraRuns} (No)` : "No";
+        if(extraRuns > 0) {
+          batsmen[strikerIdx].runs += extraRuns;
+          batsmen[strikerIdx].balls++;
+          run += extraRuns;
+          // Change strike for odd runs
+          if(extraRuns % 2 === 1) onCrease = [onCrease[1], onCrease[0]];
+        }
+        let label = extraRuns > 0 ? `${extraRuns} (${extraType})` : extraType;
         recordExtraBall(label);
       }
       else if (type === "run") {
         batsmen[strikerIdx].balls++; batsmen[strikerIdx].runs += val;
-        nextBall(val, false, val); if(val%2===1) onCrease = [onCrease[1], onCrease[0]];
+        nextBall(val, false, val);
+        if(val % 2 === 1) onCrease = [onCrease[1], onCrease[0]];
       }
       else if (type === "wicket") {
         let runsBeforeWicket = prompt("Enter runs taken on this ball before wicket (leave blank for 0):", "0");
         runsBeforeWicket = parseInt(runsBeforeWicket) || 0;
-        if(runsBeforeWicket>0) batsmen[strikerIdx].runs += runsBeforeWicket, batsmen[strikerIdx].balls++;
+        if(runsBeforeWicket > 0) {
+          batsmen[strikerIdx].runs += runsBeforeWicket;
+          batsmen[strikerIdx].balls++;
+          run += runsBeforeWicket;
+          // Change strike for odd runs
+          if(runsBeforeWicket % 2 === 1) onCrease = [onCrease[1], onCrease[0]];
+        }
         batsmen[strikerIdx].balls++;
         batsmen[strikerIdx].out = true;
-        let label = runsBeforeWicket>0 ? `${runsBeforeWicket} (Wicket)` : "Wicket";
-        nextBall(runsBeforeWicket, true, label); onCrease[0] = null; wickets++;
+        let label = runsBeforeWicket > 0 ? `${runsBeforeWicket} (Wicket)` : "Wicket";
+        nextBall(0, true, label);
+        onCrease[0] = null; wickets++;
         setTimeout(()=>showBatsmanModal("new", addBatsman), 300);
       }
       updateDisplay();
@@ -318,6 +332,14 @@
     document.getElementById('run_6').onclick = () => addScore("run",6);
     document.getElementById('run_W').onclick = () => addScore("wicket");
     document.getElementById('undo-btn').onclick = () => undo();
+
+    // STRIKE CHANGE BUTTON
+    document.getElementById('strike-change-btn').onclick = function() {
+      if(confirm("Are you sure to change strike?")) {
+        onCrease = [onCrease[1], onCrease[0]];
+        updateDisplay();
+      }
+    };
 
     document.getElementById('scoreboard-btn').onclick = function() { openModal(); };
     function openModal() {
