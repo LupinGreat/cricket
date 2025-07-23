@@ -268,8 +268,8 @@
           run += 1 + extraRun;
           extraRunsTotal += 1 + extraRun;
           if (extraRun > 0) {
-            batsmen[strikerIdx].runs += extraRun;
-            batsmen[strikerIdx].balls++;
+            batsmen[strikerIdx].runs ;
+            batsmen[strikerIdx].balls;
             if (extraRun % 2 === 1) onCrease = [onCrease[1], onCrease[0]];
           }
           recordExtraBall(extraRun > 0 ? `${extraRun} (${extraType})` : extraType);
@@ -287,13 +287,13 @@
             run += extraRun;
             extraRunsTotal += extraRun;
             batsmen[strikerIdx].runs += extraRun;
-            batsmen[strikerIdx].balls++;
+            batsmen[strikerIdx].balls;
             if (extraRun % 2 === 1) onCrease = [onCrease[1], onCrease[0]];
           }
           batsmen[strikerIdx].balls++;
           batsmen[strikerIdx].out = true;
           wickets++;
-          recordNormalBall('Wicket', true);
+          nextBall(0, true, 'Wicket');
           onCrease[0] = null;
           setTimeout(() => showBatsmanModal('new', addBatsman), 300);
           updateDisplay();
@@ -357,7 +357,7 @@
       let oversGroup = {};
       scoreboardBalls.forEach(b => {
         if (!oversGroup[b.over]) oversGroup[b.over] = [];
-        oversGroup[b.over].push(`${b.over+1}.${b.ball} – ${b.result}`);
+        oversGroup[b.over].push(`${b.over}.${b.ball+1} – ${b.result}`);
       });
       Object.keys(oversGroup).forEach(o => {
         div.innerHTML += `<div><b>Over ${parseInt(o)+1}:</b> ${oversGroup[o].join(', ')}</div>`;
