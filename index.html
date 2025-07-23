@@ -313,11 +313,11 @@
     }
 
     function recordNormalBall(result, isWicket) {
-      scoreboardBalls.push({ over, ball: balls + 1, result });
+      scoreboardBalls.push({ over, ball: balls, result });
     }
 
     function recordExtraBall(label) {
-      scoreboardBalls.push({ over, ball: balls + 1, result: label });
+      scoreboardBalls.push({ over, ball: balls, result: label });
     }
 
     function undo() {
